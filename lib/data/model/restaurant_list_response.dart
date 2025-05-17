@@ -26,4 +26,11 @@ class RestaurantListResponse {
               : <Restaurant>[],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    "error": error,
+    "message": message,
+    "count": count,
+    "restaurants": restaurants.map((x) => x.toJson()).toList(),
+  };
 }
