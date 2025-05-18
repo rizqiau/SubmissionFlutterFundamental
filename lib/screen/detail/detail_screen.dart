@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/provider/detail/favorite_icon_provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:restaurant_app/screen/detail/body_of_detail_screen_widget.dart';
 import 'package:restaurant_app/screen/detail/favorite_icon_widget.dart';
@@ -34,14 +35,17 @@ class _DetailScreenState extends State<DetailScreen> {
       appBar: AppBar(
         title: const Text("Restaurant Detail"),
         actions: [
-          Consumer<RestaurantDetailProvider>(
-            builder: (context, value, child) {
-              return switch (value.resultState) {
-                RestaurantDetailLoadedState(data: var restaurant) =>
-                  FavoriteIconWidget(restaurant: restaurant),
-                _ => const SizedBox(),
-              };
-            },
+          ChangeNotifierProvider(
+            create: (context) => FavoriteIconProvider(),
+            child: Consumer<RestaurantDetailProvider>(
+              builder: (context, value, child) {
+                return switch (value.resultState) {
+                  RestaurantDetailLoadedState(data: var restaurant) =>
+                    FavoriteIconWidget(restaurant: restaurant),
+                  _ => const SizedBox(),
+                };
+              },
+            ),
           ),
         ],
       ),

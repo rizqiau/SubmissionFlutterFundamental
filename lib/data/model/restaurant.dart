@@ -15,14 +15,16 @@ class Restaurant {
     required this.rating,
   });
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "description": description,
-    "pictureId": pictureId,
-    "city": city,
-    "rating": rating,
-  };
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      "id": id,
+      "name": name,
+      "description": description,
+      "pictureId": pictureId,
+      "city": city,
+      "rating": rating,
+    };
+  }
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(

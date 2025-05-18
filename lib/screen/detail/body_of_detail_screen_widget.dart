@@ -9,6 +9,9 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final chipTheme = Theme.of(context).chipTheme;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,10 +49,10 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.location_on,
                             size: 16,
-                            color: Colors.grey,
+                            color: colorScheme.primary.withOpacity(0.7),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -61,8 +64,8 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         restaurantDetail.address,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface.withOpacity(0.6),
                         ),
                       ),
                     ],
@@ -95,8 +98,8 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                       .map(
                         (cat) => Chip(
                           label: Text(cat.name),
-                          backgroundColor: Colors.blue[50],
-                          labelStyle: const TextStyle(color: Colors.blue),
+                          backgroundColor: colorScheme.primary.withOpacity(0.1),
+                          labelStyle: TextStyle(color: colorScheme.primary),
                         ),
                       )
                       .toList(),
@@ -181,11 +184,11 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                   width: 220,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
+                        color: colorScheme.onSurface.withOpacity(0.08),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -203,9 +206,9 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         review.date,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface.withOpacity(0.6),
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Text(

@@ -1,42 +1,74 @@
 import 'package:flutter/foundation.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
-import 'package:restaurant_app/services/sqlite_services.dart';
+import 'package:restaurant_app/data/local/local_database_service.dart';
 
 class LocalDatabaseProvider with ChangeNotifier {
-  final SqliteServices _sqliteServices = SqliteServices();
-  List<Restaurant> _favorites = [];
+  final LocalDatabaseService _service;
 
-  List<Restaurant> get favorites => _favorites;
+  LocalDatabaseProvider(this._service);
 
-  Future<void> loadFavorites() async {
+  String _message = "";
+  String get message => _message;
+
+  List<Restaurant>? _restaurantList;
+  List<Restaurant>? get restaurantList => _restaurantList;
+
+  Restaurant? _restaurant;
+  Restaurant? get restaurant => _restaurant;
+
+  Future<void> saveRestaurant(Restaurant value) async {
     try {
-      _favorites = await _sqliteServices.getFavorites();
+      final result = await _service.insertItem(value);
+
+      final isError = result == 0;
+      if (isError) {
+        _message = "Failed to save your data";
+      } else {
+        _message = "Your data is saved";
+      }
     } catch (e) {
-      debugPrint('Error loading favorites: $e');
-      _favorites = [];
+      _message = "Failed to save your data";
     }
     notifyListeners();
   }
 
-  Future<void> toggleFavorite(Restaurant restaurant) async {
+  Future<void> loadAllRestaurant() async {
     try {
-      final isFavorite = _favorites.any((fav) => fav.id == restaurant.id);
-
-      if (isFavorite) {
-        await _sqliteServices.removeFavorite(restaurant.id);
-        _favorites.removeWhere((fav) => fav.id == restaurant.id);
-      } else {
-        await _sqliteServices.insertFavorite(restaurant);
-        _favorites.add(restaurant);
-      }
-
+      _restaurantList = await _service.getAllItems();
+      _restaurant = null;
+      _message = "All of your data is loaded";
       notifyListeners();
     } catch (e) {
-      debugPrint('Error toggling favorite: $e');
+      _message = "Failed to load your all data";
+      notifyListeners();
     }
   }
 
-  bool isFavorite(String id) {
-    return _favorites.any((fav) => fav.id == id);
+  Future<void> loadRestaurantById(String id) async {
+    try {
+      _restaurant = await _service.getItemById(id as int);
+      _message = "Your data is loaded";
+      notifyListeners();
+    } catch (e) {
+      _message = "Failed to load your data";
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeRestaurantById(String id) async {
+    try {
+      await _service.removeItem(id as int);
+
+      _message = "Your data is removed";
+      notifyListeners();
+    } catch (e) {
+      _message = "Failed to remove your data";
+      notifyListeners();
+    }
+  }
+
+  bool checkItemFavorite(String id) {
+    final isSameRestaurant = _restaurant?.id == id;
+    return isSameRestaurant;
   }
 }

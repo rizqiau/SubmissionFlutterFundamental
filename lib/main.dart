@@ -11,6 +11,7 @@ import 'package:restaurant_app/provider/main/index_nav_provider.dart';
 import 'package:restaurant_app/screen/detail/detail_screen.dart';
 import 'package:restaurant_app/screen/main/main_screen.dart';
 import 'package:restaurant_app/services/http_service.dart';
+import 'package:restaurant_app/data/local/local_database_service.dart';
 import 'package:restaurant_app/services/local_notification_service.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/style/theme/restaurant_theme.dart';
@@ -36,9 +37,13 @@ void main() async {
                 context.read<LocalNotificationService>(),
               )..requestPermissions(),
         ),
-        ChangeNotifierProvider(create: (_) => LocalDatabaseProvider()),
+        Provider(create: (context) => LocalDatabaseService()),
+        ChangeNotifierProvider(
+          create:
+              (context) =>
+                  LocalDatabaseProvider(context.read<LocalDatabaseService>()),
+        ),
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
-        ChangeNotifierProvider(create: (context) => FavoriteListProvider()),
         ChangeNotifierProvider.value(value: themeProvider),
         Provider(create: (context) => ApiServices()),
         ChangeNotifierProvider(
