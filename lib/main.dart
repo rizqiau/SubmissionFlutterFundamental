@@ -3,7 +3,6 @@ import 'package:restaurant_app/provider/local_notification_provider.dart';
 import 'package:restaurant_app/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_services.dart';
-import 'package:restaurant_app/provider/detail/favorite_list_provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/home/restaurant_list_provider.dart';
 import 'package:restaurant_app/provider/local_database_provider.dart';
@@ -35,7 +34,7 @@ void main() async {
           create:
               (context) => LocalNotificationProvider(
                 context.read<LocalNotificationService>(),
-              )..requestPermissions(),
+              ),
         ),
         Provider(create: (context) => LocalDatabaseService()),
         ChangeNotifierProvider(

@@ -14,6 +14,7 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
+    final notificationProvider = context.watch<LocalNotificationProvider>();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
@@ -27,14 +28,12 @@ class _SettingScreenState extends State<SettingScreen> {
             },
           ),
           const Divider(),
-          ElevatedButton(
-            onPressed: () async {
-              await _scheduleDailyTenAMNotification();
+          SwitchListTile(
+            title: const Text('Daily Lunch Reminder (11:00 AM)'),
+            value: notificationProvider.isReminderOn,
+            onChanged: (value) {
+              context.read<LocalNotificationProvider>().toggleReminder(value);
             },
-            child: const Text(
-              "Schedule daily 11:00:00 am notification",
-              textAlign: TextAlign.center,
-            ),
           ),
         ],
       ),

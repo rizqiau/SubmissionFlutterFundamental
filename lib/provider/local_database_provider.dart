@@ -46,7 +46,7 @@ class LocalDatabaseProvider with ChangeNotifier {
 
   Future<void> loadRestaurantById(String id) async {
     try {
-      _restaurant = await _service.getItemById(id as int);
+      _restaurant = await _service.getItemById(id);
       _message = "Your data is loaded";
       notifyListeners();
     } catch (e) {
@@ -57,7 +57,7 @@ class LocalDatabaseProvider with ChangeNotifier {
 
   Future<void> removeRestaurantById(String id) async {
     try {
-      await _service.removeItem(id as int);
+      await _service.removeItem(id);
 
       _message = "Your data is removed";
       notifyListeners();

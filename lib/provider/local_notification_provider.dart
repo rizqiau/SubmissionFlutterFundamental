@@ -1,20 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:restaurant_app/services/local_notification_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalNotificationProvider extends ChangeNotifier {
   final LocalNotificationService flutterNotificationService;
 
-  LocalNotificationProvider(this.flutterNotificationService);
+  static const String _reminderPrefKey = 'isReminderOn';
 
-  int _notificationId = 0;
+  LocalNotificationProvider(this.flutterNotificationService) {
+    _loadReminderStatus();
+  }
+
+  int _notificationId = 999;
   bool? _permission = false;
   bool? get permission => _permission;
 
+  bool _isReminderOn = false;
+  bool get isReminderOn => _isReminderOn;
+
   List<PendingNotificationRequest> pendingNotificationRequests = [];
 
-  Future<void> requestPermissions() async {
-    _permission = await flutterNotificationService.requestPermissions();
+  // Future<void> requestPermissions() async {
+  //   _permission = await flutterNotificationService.requestPermissions();
+  //   notifyListeners();
+  // }
+
+  Future<void> _loadReminderStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    _isReminderOn = prefs.getBool(_reminderPrefKey) ?? false;
+    // if (_isReminderOn) {
+    //   flutterNotificationService.scheduleDailyNotification(id: _notificationId);
+    // }
+    notifyListeners();
+  }
+
+  Future<void> toggleReminder(bool value) async {
+    _isReminderOn = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_reminderPrefKey, value);
+
+    if (value) {
+      // Minta permission dulu sebelum jadwalkan notifikasi
+      final granted = await flutterNotificationService.requestPermissions();
+      if (granted != null && granted) {
+        await flutterNotificationService.scheduleDailyNotification(
+          id: _notificationId,
+        );
+      } else {
+        // Jika permission ditolak, matikan toggle dan update storage
+        _isReminderOn = false;
+        await prefs.setBool(_reminderPrefKey, false);
+        // (Opsional) Bisa kasih feedback ke user lewat snackbar/dialog
+      }
+    } else {
+      await flutterNotificationService.cancelNotification(_notificationId);
+    }
     notifyListeners();
   }
 
